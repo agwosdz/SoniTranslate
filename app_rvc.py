@@ -1768,7 +1768,7 @@ def create_gui(theme, logs_in_gui=False):
                             }
                             dict_index = {
                                 f"file_index2_{i:02d}": gr.update(
-                                    choices=index_paths
+                                    choices=index_paths, value=""
                                 )
                                 for i in range(8)
                             }
@@ -1801,6 +1801,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_00 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-1",
                                     visible=True,
                                     interactive=True,
@@ -1822,6 +1823,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_01 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-2",
                                     visible=True,
                                     interactive=True,
@@ -1843,6 +1845,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_02 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-3",
                                     visible=True,
                                     interactive=True,
@@ -1864,6 +1867,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_03 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-4",
                                     visible=True,
                                     interactive=True,
@@ -1885,6 +1889,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_04 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-5",
                                     visible=True,
                                     interactive=True,
@@ -1906,6 +1911,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_05 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-6",
                                     visible=True,
                                     interactive=True,
@@ -1927,6 +1933,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 file_index2_06 = gr.Dropdown(
                                     index_paths,
+                                    value="",
                                     label="Index-Aux",
                                     visible=True,
                                     interactive=True,
@@ -1947,7 +1954,7 @@ def create_gui(theme, logs_in_gui=False):
                                 ]
                                 f0_method_global = gr.Dropdown(
                                     f0_methods_voice,
-                                    value="pm",
+                                    value="rmvpe",
                                     label="Global F0 method",
                                     visible=True,
                                     interactive=True,
@@ -2003,7 +2010,7 @@ def create_gui(theme, logs_in_gui=False):
                             with gr.Column():
                                 tts_test = gr.Dropdown(
                                     sorted(tts_info.list_edge),
-                                    value="en-GB-ThomasNeural-Male",
+                                    value="zh-CN-YunxiaNeural-Male",
                                     label="TTS",
                                     visible=True,
                                     interactive=True,
@@ -2017,6 +2024,7 @@ def create_gui(theme, logs_in_gui=False):
                                 file_index2_07 = gr.Dropdown(
                                     index_paths,
                                     label="Index",
+                                    value="",
                                     visible=True,
                                     interactive=True,
                                 )  # value=''
@@ -2029,7 +2037,7 @@ def create_gui(theme, logs_in_gui=False):
                                 )
                                 f0method_test = gr.Dropdown(
                                     f0_methods_voice,
-                                    value="pm",
+                                    value="rmvpe",
                                     label="F0 method",
                                     visible=True,
                                     interactive=True,

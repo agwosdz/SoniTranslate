@@ -293,10 +293,10 @@ class VC(object):
             file_index != ""
             # and file_big_npy != ""
             # and os.path.exists(file_big_npy) == True
-            and os.path.exists(file_index) == True
             and index_rate != 0
         ):
             try:
+                # if(os.path.exists(file_index) == True):
                 index = faiss.read_index(file_index)
                 # big_npy = np.load(file_big_npy)
                 big_npy = index.reconstruct_n(0, index.ntotal)

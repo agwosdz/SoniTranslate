@@ -169,8 +169,6 @@ def vc_single(
             tgt_sr = resample_sr
         index_info = (
             "Using index:%s." % file_index
-            if os.path.exists(file_index)
-            else "Index not used."
         )
         return "Success.\n %s\nTime:\n npy:%ss, f0:%ss, infer:%ss" % (
             index_info,
@@ -363,16 +361,17 @@ class ClassVoices:
         model_voice_path='',
         transpose=0,
         f0method='pm',
-        file_index='',
-        file_index2='',
+        file_index="",
+        file_index2="",
+        _protect=0.2
         ):
 
         #hubert_model = None
 
         generate_inference(
             sid=model_voice_path,  # model path
-            to_return_protect0=0.33,
-            to_return_protect1=0.33
+            to_return_protect0=_protect,
+            to_return_protect1=_protect
         )
 
         for _value_item in _values:
@@ -392,11 +391,11 @@ class ClassVoices:
                 file_index= file_index, # dir pwd?
                 file_index2= file_index2,
                 # file_big_npy1,
-                index_rate= float(0.66),
+                index_rate= float(0),
                 filter_radius= int(3),
                 resample_sr= int(0),
                 rms_mix_rate= float(0.25),
-                protect= float(0.33),
+                protect= _protect,
             )
 
             sf.write(
