@@ -65,7 +65,7 @@ def upload_model_list():
         logger.info(models)
 
     index_root = "logs"
-    index_paths = []
+    index_paths = [""]
     for name in os.listdir(index_root):
         if name.endswith(".index"):
             index_paths.append("logs/" + name)

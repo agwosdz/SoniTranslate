@@ -1,3 +1,5 @@
+from pydub import AudioSegment
+from pydub.utils import mediainfo
 from gtts import gTTS
 import edge_tts, asyncio, json, glob # noqa
 from tqdm import tqdm
@@ -43,6 +45,17 @@ def verify_saved_file_and_size(filename):
             f"File '{filename}' has a zero size. Related to incorrect TTS for the target language"
         )
 
+def detect_leading_silence(sound, silence_threshold=-50.0, chunk_size=20):
+    """
+    sound: a PyDub AudioSegment
+    silence_threshold: dB level below which a chunk is considered silent
+    chunk_size: duration of each chunk in milliseconds
+    """
+    trim_ms = 0
+    assert chunk_size > 0  # Avoid infinite loop
+    while sound[trim_ms:trim_ms + chunk_size].dBFS < silence_threshold and trim_ms < len(sound):
+        trim_ms += chunk_size
+    return trim_ms
 
 def error_handling_in_tts(error, segment, TRANSLATE_AUDIO_TO, filename):
     logger.error(f"Error: {str(error)}")
@@ -958,16 +971,28 @@ def accelerate_segments(
         filename = f"audio/{start}.ogg"
         # elif speaker in speakers_bark + speakers_vits + speakers_coqui + speakers_vits_onnx:
         #    filename = f"audio/{start}.wav" # wav
+        sound = AudioSegment.from_file(filename)
+        original_bitrate = mediainfo(filename)['bit_rate']
+        # Detect leading and trailing silence
+        start_trim = max(detect_leading_silence(sound) - 50, 0) # miliseconds
+        end_trim = max(detect_leading_silence(sound.reverse()) - 200, 0)
+        trimmed_sound = sound[start_trim: len(sound) - end_trim]
+        trimmed_sound.export(filename, bitrate=original_bitrate)
+
+        logger.debug(
+                        f"trim start: {start_trim}, "
+                        f"end: {end_trim}"
+                    )
 
         # duration
         duration_true = end - start
-        duration_tts = librosa.get_duration(filename=filename)
+        duration_tts = trimmed_sound.duration_seconds
 
         # Accelerate percentage
         acc_percentage = duration_tts / duration_true
 
         # Smoth
-        if acceleration_rate_regulation and acc_percentage >= 1.4:
+        if acceleration_rate_regulation:
             try:
                 next_segment = result_diarize["segments"][
                     min(max_count_segments_idx, i + 1)
@@ -976,28 +1001,31 @@ def accelerate_segments(
                 next_speaker = next_segment["speaker"]
                 duration_with_next_start = next_start - start
 
-                if duration_with_next_start > duration_true:
+                if acc_percentage < 1 and duration_with_next_start >= duration_tts:
+                    acc_percentage = 1
+
+                if acc_percentage >= 1.2 and duration_with_next_start > duration_true:
                     extra_time = duration_with_next_start - duration_true
 
                     if speaker == next_speaker:
                         # half
-                        smoth_duration = duration_true + (extra_time * 1/2)
+                        smoth_duration = duration_true + (extra_time * 0.6)
                     else:
                         # 2/3
-                        smoth_duration = duration_true + (extra_time * 2/3)
+                        smoth_duration = duration_true + (extra_time * 0.8)
                     logger.debug(
                         f"Base acc: {acc_percentage}, "
                         f"smoth acc: {duration_tts / smoth_duration}"
                     )
-                    acc_percentage = max(1.21, (duration_tts / smoth_duration))
+                    acc_percentage = (duration_tts / smoth_duration)
 
             except Exception as error:
                 logger.error(str(error))
 
         if acc_percentage > max_accelerate_audio:
             acc_percentage = max_accelerate_audio
-        elif acc_percentage <= 1.2 and acc_percentage >= 0.8:
-            acc_percentage = 1.0
+        # elif acc_percentage <= 1.2 and acc_percentage >= 0.8:
+        #     acc_percentage = 1.0
         elif acc_percentage <= 0.79:
             acc_percentage = 0.8
 
