@@ -151,17 +151,17 @@ def diarize_speech(
                 )
                 del cap
         except Exception as error:
-            error = str(error)
+            error_str = str(error)
             gc.collect()
             torch.cuda.empty_cache()  # noqa
-            if "'NoneType' object has no attribute 'to'" in error:
+            if "'NoneType' object has no attribute 'to'" in error_str:
                 if model_name == diarization_models["pyannote_2.1"]:
                     raise ValueError(
                         "Accept the license agreement for using Pyannote 2.1."
                         " You need to have an account on Hugging Face and "
                         "accept the license to use the models: "
                         "https://huggingface.co/pyannote/speaker-diarization "
-                        "and https://huggingface.co/pyannote/segmentation. "
+                        "and https://huggingface.co/pyannote/segmentation "
                         "Get your KEY TOKEN here: https://hf.co/settings/tokens"
                     )
                 elif model_name == diarization_models["pyannote_3.1"]:
@@ -169,7 +169,7 @@ def diarize_speech(
                         "New Licence Pyannote 3.1: You need to have an account"
                         " on Hugging Face and accept the license to use the "
                         "models: https://huggingface.co/pyannote/speaker-diarization-3.1"
-                        " and https://huggingface.co/pyannote/segmentation-3.0."
+                        " and https://huggingface.co/pyannote/segmentation-3.0 "
                     )
             else:
                 raise error
