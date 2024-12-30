@@ -2261,6 +2261,7 @@ def create_gui(theme, logs_in_gui=False):
             with gr.Column():
                 with gr.Accordion(lg_conf["replace_title"], open=False):
                     with gr.Column(variant="compact"):
+                        #refresh_button = gr.Button("Refresh")
                         with gr.Column():
                             gr.Markdown(lg_conf["sec1_title"])
                             enable_custom_voice = gr.Checkbox(
@@ -2287,7 +2288,7 @@ def create_gui(theme, logs_in_gui=False):
                                 "rmvpe",
                                 "rmvpe+",
                             ]
-
+                            
                             def model_conf():
                                 return gr.Dropdown(
                                     models_path,
@@ -2409,6 +2410,7 @@ def create_gui(theme, logs_in_gui=False):
                                             button_config = button_conf(
                                                 TTS_TABS[i]
                                             )
+                                            refresh_button = gr.Button("Refresh Models")
 
                                             confirm_conf = gr.HTML()
 
@@ -2433,6 +2435,15 @@ def create_gui(theme, logs_in_gui=False):
                                             "model": model_gui,
                                             "index": index_gui,
                                         })
+                                        refresh_button.click(
+                                            update_models,
+                                            [],
+                                            [
+                                                elem["model"] for elem in configs_storage
+                                            ] + [
+                                                elem["index"] for elem in configs_storage
+                                            ],
+                                        )
 
                 with gr.Column():
                     with gr.Accordion("Test R.V.C.", open=False):
@@ -2452,6 +2463,7 @@ def create_gui(theme, logs_in_gui=False):
                                     visible=True,
                                     interactive=True,
                                 )
+                                refresh_button = gr.Button("Refresh Models")
                                 model_test = model_conf()
                                 index_test = index_conf()
                                 pitch_test = pitch_lvl_conf()
@@ -2491,7 +2503,6 @@ def create_gui(theme, logs_in_gui=False):
                             elem["index"] for elem in configs_storage
                         ] + [index_test],
                     )
-
         with gr.Tab(lg_conf["tab_help"]):
             gr.Markdown(lg_conf["tutorial"])
             gr.Markdown(news)
@@ -2731,7 +2742,15 @@ def create_gui(theme, logs_in_gui=False):
         ).then(
             play_sound_alert, [play_sound_gui], [sound_alert_notification]
         )
-
+        refresh_button.click(
+                        update_models,
+                        [],
+                        [
+                            elem["model"] for elem in configs_storage
+                        ] + [model_test] + [
+                            elem["index"] for elem in configs_storage
+                        ] + [index_test]            
+        )
         # Run docs process
         docs_button.click(
             SoniTr.multilingual_docs_conversion,
