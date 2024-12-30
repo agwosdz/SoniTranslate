@@ -2410,7 +2410,7 @@ def create_gui(theme, logs_in_gui=False):
                                             button_config = button_conf(
                                                 TTS_TABS[i]
                                             )
-                                            refresh_button = gr.Button("Refresh Models")
+                                            refresh_button = gr.Button("Refresh Models", variant="primary")
 
                                             confirm_conf = gr.HTML()
 
@@ -2463,7 +2463,7 @@ def create_gui(theme, logs_in_gui=False):
                                     visible=True,
                                     interactive=True,
                                 )
-                                refresh_button = gr.Button("Refresh Models")
+                                refresh_button = gr.Button("Refresh Models", variant="primary")
                                 model_test = model_conf()
                                 index_test = index_conf()
                                 pitch_test = pitch_lvl_conf()
