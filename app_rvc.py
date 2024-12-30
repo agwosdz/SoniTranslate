@@ -2429,12 +2429,7 @@ def create_gui(theme, logs_in_gui=False):
                                             ],
                                             outputs=[confirm_conf],
                                         )
-
-                                        configs_storage.append({
-                                            "tag": tag_gui,
-                                            "model": model_gui,
-                                            "index": index_gui,
-                                        })
+                                        
                                         refresh_button.click(
                                             update_models,
                                             [],
@@ -2444,6 +2439,12 @@ def create_gui(theme, logs_in_gui=False):
                                                 elem["index"] for elem in configs_storage
                                             ],
                                         )
+                                        configs_storage.append({
+                                            "tag": tag_gui,
+                                            "model": model_gui,
+                                            "index": index_gui,
+                                        })
+
 
                 with gr.Column():
                     with gr.Accordion("Test R.V.C.", open=False):
