@@ -2261,7 +2261,6 @@ def create_gui(theme, logs_in_gui=False):
             with gr.Column():
                 with gr.Accordion(lg_conf["replace_title"], open=False):
                     with gr.Column(variant="compact"):
-                        #refresh_button = gr.Button("Refresh")
                         with gr.Column():
                             gr.Markdown(lg_conf["sec1_title"])
                             enable_custom_voice = gr.Checkbox(
@@ -2288,7 +2287,7 @@ def create_gui(theme, logs_in_gui=False):
                                 "rmvpe",
                                 "rmvpe+",
                             ]
-                            
+
                             def model_conf():
                                 return gr.Dropdown(
                                     models_path,
@@ -2444,6 +2443,15 @@ def create_gui(theme, logs_in_gui=False):
                                             "model": model_gui,
                                             "index": index_gui,
                                         })
+                                        refresh_button.click(
+                                            update_models,
+                                            [],
+                                            [
+                                                elem["model"] for elem in configs_storage
+                                            ] + [
+                                                elem["index"] for elem in configs_storage
+                                            ],
+                                        )
 
 
                 with gr.Column():
